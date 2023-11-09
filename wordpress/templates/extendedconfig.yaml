@@ -13,6 +13,10 @@ data:
             ServerAdmin webmaster@localhost
             DocumentRoot /var/www/html
 
+            # Manually load the headers module
+            LoadModule headers_module /usr/lib/apache2/modules/mod_headers.so
+
+
             ErrorLog ${APACHE_LOG_DIR}/error.log
             CustomLog ${APACHE_LOG_DIR}/access.log combined
     </VirtualHost>
