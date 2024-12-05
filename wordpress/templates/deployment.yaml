@@ -50,12 +50,12 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           workingDir: /var/www/html{{ if .Values.settings.wordpressSubDirectory }}{{ .Values.settings.wordpressSubDirectory }}{{ end }}
           envFrom:
-            - secretRef:
-                name: {{ include "wordpress.fullname" . }}
           {{- range .Values.extraEnvSecrets }}
             - secretRef:
                 name: {{ . }}
           {{- end }}
+            - secretRef:
+                name: {{ include "wordpress.fullname" . }}
           {{- range .Values.extraEnvConfigs }}
             - configMapRef:
                 name: {{ . }}
