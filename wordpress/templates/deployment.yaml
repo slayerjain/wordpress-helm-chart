@@ -168,6 +168,14 @@ spec:
             - mountPath: {{ $secret.mountPath }}
               name: {{ $secret.name }}
             {{- end }}
+            {{- if and (not .Values.mariadb.enabled) .Values.externalDatabase }}
+            {{- if and .Values.externalDatabase.ssl .Values.externalDatabase.ssl.enabled .Values.externalDatabase.ssl.caSecretName }}
+            - mountPath: /etc/ssl/certs/mysql-ca.pem
+              subPath: ca.pem
+              name: mysql-ssl-ca
+              readOnly: true
+            {{- end }}
+            {{- end }}
       {{- with .Values.extraContainers }}
       {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -196,6 +204,14 @@ spec:
           secret:
             secretName: {{ $secret.name }}
             defaultMode: 0440
+        {{- end }}
+        {{- if and (not .Values.mariadb.enabled) .Values.externalDatabase }}
+        {{- if and .Values.externalDatabase.ssl .Values.externalDatabase.ssl.enabled .Values.externalDatabase.ssl.caSecretName }}
+        - name: mysql-ssl-ca
+          secret:
+            secretName: {{ .Values.externalDatabase.ssl.caSecretName }}
+            defaultMode: 0440
+        {{- end }}
         {{- end }}
         - name: wordpress-vol
         {{- if .Values.storage.persistentVolumeClaimName }}

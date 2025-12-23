@@ -17,14 +17,38 @@ data:
   WORDPRESS_DB_NAME: {{ .name | b64enc }}
   WORDPRESS_DB_USER: {{ .user | b64enc }}
   WORDPRESS_DB_PASSWORD: {{ .password | b64enc }}
-  WORDPRESS_DB_HOST: {{ .host | b64enc }}
+  {{- $dbPort := default "3306" .port }}
+  WORDPRESS_DB_HOST: {{ printf "%s:%v" .host $dbPort | b64enc }}
 {{- end }}
 {{- end }}
 {{- with .Values.settings }}
   {{- if .tablePrefix }}
   WORDPRESS_TABLE_PREFIX: {{ .tablePrefix | b64enc }}
   {{- end }}
-  {{- if .configExtra }}
-  WORDPRESS_CONFIG_EXTRA: {{ .configExtra | b64enc }}
-  {{- end }}  
+{{- end }}
+{{- /* Build WORDPRESS_CONFIG_EXTRA combining SSL settings and custom config */ -}}
+{{- $configExtra := "" }}
+{{- if and (not .Values.mariadb.enabled) .Values.externalDatabase }}
+  {{- if and .Values.externalDatabase.ssl .Values.externalDatabase.ssl.enabled }}
+    {{- $sslConfig := "define('MYSQL_CLIENT_FLAGS', MYSQLI_CLIENT_SSL);" }}
+    {{- $sslMode := printf "define('MYSQL_SSL_MODE', '%s');" (default "REQUIRED" .Values.externalDatabase.ssl.mode) }}
+    {{- if .Values.externalDatabase.ssl.useSystemCa }}
+      {{- /* Use system CA bundle - includes DigiCert, Let's Encrypt, and other public CAs */ -}}
+      {{- $configExtra = printf "%s %s define('MYSQL_SSL_CA', '/etc/ssl/certs/ca-certificates.crt');" $sslConfig $sslMode }}
+    {{- else if .Values.externalDatabase.ssl.caPath }}
+      {{- $configExtra = printf "%s %s define('MYSQL_SSL_CA', '%s');" $sslConfig $sslMode .Values.externalDatabase.ssl.caPath }}
+    {{- else }}
+      {{- $configExtra = printf "%s %s" $sslConfig $sslMode }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+{{- if .Values.settings.configExtra }}
+  {{- if $configExtra }}
+    {{- $configExtra = printf "%s %s" $configExtra .Values.settings.configExtra }}
+  {{- else }}
+    {{- $configExtra = .Values.settings.configExtra }}
+  {{- end }}
+{{- end }}
+{{- if $configExtra }}
+  WORDPRESS_CONFIG_EXTRA: {{ $configExtra | b64enc }}
 {{- end }}

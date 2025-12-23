@@ -96,12 +96,68 @@ It fully supports deployment of the multi-architecture docker image.
 | externalDatabase.name | string | `"wordpress"` | External database name |
 | externalDatabase.user | string | `nil` | External database user name |
 | externalDatabase.password | string | `nil` | External database user password |
+| externalDatabase.port | int | `3306` | External database port |
+| externalDatabase.ssl.enabled | bool | `false` | Enable SSL connection to database |
+| externalDatabase.ssl.mode | string | `"REQUIRED"` | SSL mode (REQUIRED, VERIFY_CA, VERIFY_IDENTITY) |
+| externalDatabase.ssl.useSystemCa | bool | `false` | Use system CA certificates (includes DigiCert, Let's Encrypt, etc.) |
+| externalDatabase.ssl.caPath | string | `nil` | Custom CA certificate path (only if useSystemCa is false) |
+| externalDatabase.ssl.caSecretName | string | `nil` | Name of secret containing custom CA certificate (key: ca.pem) |
 | mariadb.enabled | bool | `false` | Enable MariaDB deployment (will disable external database settings) |
 | mariadb.settings.rootPassword | string | `nil` | MariaDB root user password |
 | mariadb.storage | string | `nil` | MariaDB storage settings |
 | mariadb.userDatabase.name | string | `nil` | MariaDB wordpress database name |
 | mariadb.userDatabase.password | string | `nil` | MariaDB wordpress database user |
 | mariadb.userDatabase.user | string | `nil` | MariaDB wordpress database user password |
+
+### Azure MySQL Flexible Server with SSL
+
+For Azure MySQL Flexible Server with SSL enforced (MySQL 8.4), you have two options:
+
+#### Option 1: Use System CA Bundle (Recommended)
+
+The WordPress container already includes common public root CAs (DigiCert, Let's Encrypt, etc.). This is the simplest approach - no secret needed:
+
+```yaml
+externalDatabase:
+  host: your-server.mysql.database.azure.com
+  name: wordpress
+  user: your-username
+  password: your-password
+  port: 3306
+  ssl:
+    enabled: true
+    mode: REQUIRED
+    useSystemCa: true
+```
+
+#### Option 2: Use Custom CA Certificate
+
+If you need to use a specific CA certificate:
+
+1. Download the DigiCert Global Root G2 certificate:
+   ```bash
+   curl -o DigiCertGlobalRootG2.crt.pem https://dl.cacerts.digicert.com/DigiCertGlobalRootG2.crt.pem
+   ```
+
+2. Create a Kubernetes secret:
+   ```bash
+   kubectl create secret generic mysql-ssl-ca --from-file=ca.pem=DigiCertGlobalRootG2.crt.pem
+   ```
+
+3. Configure values.yaml:
+   ```yaml
+   externalDatabase:
+     host: your-server.mysql.database.azure.com
+     name: wordpress
+     user: your-username
+     password: your-password
+     port: 3306
+     ssl:
+       enabled: true
+       mode: REQUIRED
+       caPath: /etc/ssl/certs/mysql-ca.pem
+       caSecretName: mysql-ssl-ca
+   ```
 
 ## Wordpress parameters
 
