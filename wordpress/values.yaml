@@ -173,6 +173,27 @@ externalDatabase: {}
   ## Database host
   # host:
 
+  ## Database port (default: 3306)
+  # port: 3306
+
+  ## SSL/TLS configuration for database connection
+  ## Required for Azure MySQL Flexible Server with SSL enforced
+  # ssl:
+    ## Enable SSL connection (default: false)
+    # enabled: false
+    ## SSL mode: REQUIRED, VERIFY_CA, or VERIFY_IDENTITY
+    ## For Azure MySQL Flexible Server, use REQUIRED or VERIFY_CA
+    # mode: REQUIRED
+    ## Use system CA certificates bundle (includes DigiCert, Let's Encrypt, etc.)
+    ## Set to true for Azure MySQL Flexible Server (recommended - no secret needed)
+    # useSystemCa: true
+    ## Custom CA certificate path (only needed if useSystemCa is false)
+    ## For custom CA, mount certificate via caSecretName
+    # caPath: /etc/ssl/certs/mysql-ca.pem
+    ## Name of the secret containing the CA certificate (key: ca.pem)
+    ## Only required when useSystemCa is false and you need a custom CA
+    # caSecretName:
+
 ## Wordpress specific settings
 settings:
   ## custom wordpress subdirectory (default: empty)
