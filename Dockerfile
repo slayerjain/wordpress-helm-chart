@@ -1,4 +1,4 @@
-FROM wordpress:6.3.1-apache
+FROM wordpress:6.9.0-apache
 
 # Run commands as root
 USER root
