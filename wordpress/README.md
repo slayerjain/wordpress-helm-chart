@@ -10,7 +10,7 @@ A Helm chart for Wordpress on Kubernetes
 
 ## Introduction
 
-This chart uses the original [Wordpress from Docker](https://hub.docker.com/_/wordpress) to deploy Wordpress in Kubernetes.
+This chart uses a custom Wordpress image hosted on [GitHub Container Registry](https://ghcr.io/slayerjain/wordpress-helm-chart) to deploy Wordpress in Kubernetes.
 
 It fully supports deployment of the multi-architecture docker image.
 
@@ -33,8 +33,8 @@ It fully supports deployment of the multi-architecture docker image.
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | image.pullPolicy | string | `"IfNotPresent"` | Image pull policy |
-| image.registry | string | `"docker.io"` | Image registry |
-| image.repository | string | `"wordpress"` | Image name |
+| image.registry | string | `"ghcr.io"` | Image registry |
+| image.repository | string | `"slayerjain/wordpress-helm-chart"` | Image name |
 | image.tag | string | `""` | Image tag |
 | imagePullSecrets | list | `[]` | Image pull secrets |
 | extraInitContainers | list | `[]` | Extra init containers |

@@ -3,10 +3,10 @@
 ## Number of wordpress replicas
 replicaCount: 1
 
-## Netxcloud docker image
+## Wordpress docker image
 image:
-  registry: "docker.io"
-  repository: "wordpress"
+  registry: "ghcr.io"
+  repository: "slayerjain/wordpress-helm-chart"
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
