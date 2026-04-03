@@ -18,15 +18,13 @@ data:
 
             <Directory /var/www/html>
                 Options FollowSymLinks
-                AllowOverride All
+                AllowOverride FileInfo Options Limit
                 Require all granted
-
-                # Pass Authorization header to PHP (required for REST API basic auth)
-                CGIPassAuth On
             </Directory>
 
-            # Fallback: pass Authorization header via environment variable
-            SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+            # Pass Authorization header to PHP via environment variable
+            # Uses case-insensitive match and requires non-empty value
+            SetEnvIfNoCase Authorization "(.+)" HTTP_AUTHORIZATION=$1
 
             ErrorLog ${APACHE_LOG_DIR}/error.log
             CustomLog ${APACHE_LOG_DIR}/access.log combined
