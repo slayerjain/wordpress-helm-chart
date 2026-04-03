@@ -3,8 +3,8 @@ FROM wordpress:6.9.0-apache
 # Run commands as root
 USER root
 
-# Enable the headers module
-RUN a2enmod headers
+# Enable required Apache modules
+RUN a2enmod headers rewrite
 
 # Switch back to the www-data user
 USER www-data

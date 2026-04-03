@@ -13,9 +13,15 @@ data:
             ServerAdmin webmaster@localhost
             DocumentRoot /var/www/html
 
-            # Manually load the headers module
-            LoadModule headers_module /usr/lib/apache2/modules/mod_headers.so
+            <Directory /var/www/html>
+                Options FollowSymLinks
+                AllowOverride FileInfo Options Limit
+                Require all granted
+            </Directory>
 
+            # Pass Authorization header to PHP via environment variable
+            # Uses case-insensitive match and requires non-empty value
+            SetEnvIfNoCase Authorization "(.+)" HTTP_AUTHORIZATION=$1
 
             ErrorLog ${APACHE_LOG_DIR}/error.log
             CustomLog ${APACHE_LOG_DIR}/access.log combined
