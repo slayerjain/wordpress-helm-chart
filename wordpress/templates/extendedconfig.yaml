@@ -13,9 +13,6 @@ data:
             ServerAdmin webmaster@localhost
             DocumentRoot /var/www/html
 
-            # Manually load the headers module
-            LoadModule headers_module /usr/lib/apache2/modules/mod_headers.so
-
             <Directory /var/www/html>
                 Options FollowSymLinks
                 AllowOverride FileInfo Options Limit
