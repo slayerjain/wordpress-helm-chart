@@ -164,6 +164,9 @@ spec:
             - mountPath: /usr/local/etc/php/conf.d/custom.ini
               subPath: custom.ini
               name: extended
+            - mountPath: /var/www/html{{ if .Values.settings.wordpressSubDirectory }}{{ .Values.settings.wordpressSubDirectory }}{{ end }}/wp-content/mu-plugins/rest-api-users-access.php
+              subPath: rest-api-users-access.php
+              name: extended
             {{- range $secret := .Values.extraSecrets }}
             - mountPath: {{ $secret.mountPath }}
               name: {{ $secret.name }}

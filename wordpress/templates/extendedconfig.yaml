@@ -41,3 +41,21 @@ data:
     post_max_size = {{ .Values.settings.maxFileUploadSize }}
     memory_limit = {{ .Values.settings.memoryLimit }}
     {{- end }}
+  rest-api-users-access.php: |
+    <?php
+    /**
+     * MU-Plugin: Allow authenticated users to access REST API /users endpoint.
+     *
+     * Themes or plugins may blanket-block /wp/v2/users to prevent user
+     * enumeration. This override ensures logged-in users (e.g. admins
+     * creating application passwords) are not affected.
+     */
+    add_filter('rest_pre_dispatch', function ($result, $server, $request) {
+        if (is_wp_error($result)
+            && $result->get_error_code() === 'rest_forbidden'
+            && strpos($request->get_route(), '/wp/v2/users') !== false
+            && is_user_logged_in()) {
+            return null;
+        }
+        return $result;
+    }, 20, 3);
