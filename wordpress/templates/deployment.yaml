@@ -36,8 +36,14 @@ spec:
       securityContext:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.extraInitContainers }}
       initContainers:
+        - name: init-mu-plugins
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          command: ["sh", "-c", "mkdir -p /var/www/html{{ if .Values.settings.wordpressSubDirectory }}{{ .Values.settings.wordpressSubDirectory }}{{ end }}/wp-content/mu-plugins"]
+          volumeMounts:
+            - mountPath: /var/www/html{{ if .Values.settings.wordpressSubDirectory }}{{ .Values.settings.wordpressSubDirectory }}{{ end }}
+              name: wordpress-vol
+      {{- with .Values.extraInitContainers }}
       {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
