@@ -59,3 +59,7 @@ data:
         }
         return $result;
     }, 20, 3);
+{{- range $name, $content := .Values.extraMuPlugins }}
+  {{ $name }}: |
+{{ $content | indent 4 }}
+{{- end }}

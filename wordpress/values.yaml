@@ -222,6 +222,23 @@ extraEnvSecrets: []
 ## A list of existing configmaps that will be mounted into the container as environment variables
 extraEnvConfigs: []
 
+## Additional must-use plugins, rendered into the "-extended" ConfigMap and
+## mounted into wp-content/mu-plugins/.
+##
+## Key is the filename (must end in .php — WordPress only loads top-level .php
+## files from mu-plugins), value is the PHP source. Because a mu-plugin needs no
+## activation record, mounting the file IS the install, which keeps deployments
+## that manage WordPress declaratively free of admin-UI state.
+##
+## Changing this rolls the pods automatically: the deployment carries a
+## checksum/extendedconfig annotation over this ConfigMap.
+##
+## extraMuPlugins:
+##   my-plugin.php: |
+##     <?php
+##     // ...
+extraMuPlugins: {}
+
 ## A list of additional existing secrets that will be mounted into the container
 ## The mounted files of the secrets can be used for advanced configuration - f.e. TLS
 extraSecrets: []
