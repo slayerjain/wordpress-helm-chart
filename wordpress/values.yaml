@@ -294,3 +294,21 @@ mariadb:
 
     ## the storage class name
     className:
+
+# Gateway API support (alternative to ingress; used with Envoy Gateway).
+gateway:
+  enabled: false
+  parentRefs: []
+  hostnames: []
+  rules: []
+  tls:
+    enabled: false
+    secretName: ""
+    issuerRef:
+      kind: ClusterIssuer
+      name: letsencrypt-prod
+    dnsNames: []
+  securityPolicy:
+    enabled: false
+    defaultAction: Allow
+    rules: []
