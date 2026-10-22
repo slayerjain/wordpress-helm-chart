@@ -1,0 +1,11 @@
+version: 2
+updates:
+  # The Dockerfile pins the wordpress base by tag + digest. Without this, the
+  # image only picks up PHP/Debian security rebuilds when someone remembers to
+  # bump it, which is how prod sat on a vulnerable PHP 8.3.30.
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: daily
+    commit-message:
+      prefix: fix
