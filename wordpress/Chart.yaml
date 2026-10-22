@@ -5,12 +5,12 @@ description: A Helm chart for Wordpress on Kubernetes
 type: application
 
 # This is the chart version.
-version: "0.9.9"
+version: "0.9.10"
 
 # Default image tag (image.tag overrides it). Must be a tag this repo's
 # workflow publishes, i.e. the vX.Y.Z git tag without the "v"; the workflow
 # fails a release whose tag doesn't match, so bump this before tagging.
-appVersion: "1.2.5"
+appVersion: "1.2.6"
 
 dependencies:
   - name: mariadb
