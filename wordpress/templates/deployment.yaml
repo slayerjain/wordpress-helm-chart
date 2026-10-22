@@ -19,8 +19,11 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/secureconfig: {{ include (print $.Template.BasePath "/secureconfig.yaml") . | sha256sum }}
-        checksum/extendedconfig: {{ include (print $.Template.BasePath "/extendedconfig.yaml") . | sha256sum }}
+        # Hash only .data: the rendered objects also carry chart/app version
+        # labels, and hashing those restarted pods on every chart bump even
+        # when no config changed.
+        checksum/secureconfig: {{ (include (print $.Template.BasePath "/secureconfig.yaml") . | fromYaml).data | toYaml | sha256sum }}
+        checksum/extendedconfig: {{ (include (print $.Template.BasePath "/extendedconfig.yaml") . | fromYaml).data | toYaml | sha256sum }}
     {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
     {{- end }}
