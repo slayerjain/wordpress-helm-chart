@@ -25,6 +25,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # The chart's default image tag is appVersion; a release that doesn't
+      # match it leaves default installs pointing at an image that was never
+      # published.
+      - name: Check release tag matches chart appVersion
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          app_version=$(sed -n 's/^appVersion: *"\{0,1\}\([^"]*\)"\{0,1\}$/\1/p' wordpress/Chart.yaml)
+          if [ "v${app_version}" != "${GITHUB_REF_NAME}" ]; then
+            echo "::error file=wordpress/Chart.yaml::appVersion ${app_version} does not match release tag ${GITHUB_REF_NAME}; bump appVersion before tagging"
+            exit 1
+          fi
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
