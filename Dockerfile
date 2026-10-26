@@ -2,7 +2,7 @@
 # highest risk under mod_php, which this apache image uses). Pinned by digest
 # because exact tags like 6.9.0-apache stop being rebuilt and silently keep a
 # vulnerable PHP; bump tag + digest together to pick up future PHP patches.
-FROM wordpress:7.1.3-php8.3-apache@sha256:f3e6835fa7d4a5b786615c24b67ec70816e06ebd517d31276bef423e49dfd126
+FROM wordpress:7.1.3-php8.3-apache@sha256:d42f63cb89ad0eab272c4b393164e63830d0df270009907919f7dcce52b1a20b
 
 # Run commands as root
 USER root
